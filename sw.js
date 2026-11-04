@@ -1,9 +1,9 @@
 
-const FILES = ["assets/index-X5Um9mZS.css","assets/index-sdTXRcQN.js","icon-192.png","icon-512.png","index.html","manifest.webmanifest"];
+const FILES = ["assets/index-C0jdnubj.css","assets/index-DqQ_k7WJ.js","icon-192.png","icon-512.png","index.html","manifest.webmanifest"];
 const ROOT = self.registration.scope;
 const URLS = FILES.map(file => new URL(file, ROOT).href);
 const PREFIX = 'allenamento-static-' + new URL(ROOT).pathname + '-';
-const CACHE = PREFIX + '4cdeb479c6fa980c';
+const CACHE = PREFIX + '8c875af31e2e60a5';
 self.addEventListener('install', event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(URLS))));
 self.addEventListener('activate', event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith(PREFIX) && key !== CACHE).map(key => caches.delete(key)))).then(() => self.clients.claim())));
 self.addEventListener('fetch', event => {
