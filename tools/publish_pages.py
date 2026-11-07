@@ -62,6 +62,7 @@ def publish(repository,files):
     else:
         api(f'repos/{repository}/git/refs/heads/gh-pages',{'sha':commit['sha'],'force':False},method='PATCH')
     api(f'repos/{repository}/pages',{'source':{'branch':'gh-pages','path':'/'},'build_type':'legacy'},method='PUT')
+    api(f'repos/{repository}/pages/builds',method='POST')
     print('Commit build: '+commit['sha'])
 
 def main():
