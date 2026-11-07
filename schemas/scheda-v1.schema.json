@@ -1,0 +1,323 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://allenamento.local/scheda-v1.schema.json",
+  "type": "object",
+  "properties": {
+    "formato_versione": {
+      "const": 1
+    },
+    "operation_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "strumenti": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nome": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "required": [
+          "id",
+          "nome"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "esercizi": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nome": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "istruzioni": {
+            "type": "string"
+          },
+          "categoria": {
+            "enum": [
+              "ripetizioni",
+              "ripetizioni_carico",
+              "durata",
+              "durata_carico",
+              "distanza_durata"
+            ]
+          },
+          "convenzione_carico": {
+            "enum": [
+              "totale",
+              "per_attrezzo",
+              null
+            ]
+          },
+          "convenzione_ripetizioni": {
+            "enum": [
+              "totali",
+              "per_lato",
+              null
+            ]
+          },
+          "strumenti": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "strumento_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "ruolo": {
+                  "enum": [
+                    "necessario",
+                    "utile"
+                  ]
+                }
+              },
+              "required": [
+                "strumento_id",
+                "ruolo"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "id",
+          "nome",
+          "istruzioni",
+          "categoria",
+          "convenzione_carico",
+          "convenzione_ripetizioni",
+          "strumenti"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "scheda": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "nome": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "note": {
+          "type": "string"
+        },
+        "allenamenti": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "nome": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "note": {
+                "type": "string"
+              },
+              "esercizi": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "esercizio_id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "note": {
+                      "type": "string"
+                    },
+                    "valori": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "serie": {
+                              "type": "integer",
+                              "minimum": 1
+                            },
+                            "ripetizioni": {
+                              "type": "integer",
+                              "minimum": 1
+                            }
+                          },
+                          "required": [
+                            "serie",
+                            "ripetizioni"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "serie": {
+                              "type": "integer",
+                              "minimum": 1
+                            },
+                            "ripetizioni": {
+                              "type": "integer",
+                              "minimum": 1
+                            },
+                            "carico_kg": {
+                              "type": "number",
+                              "minimum": 0
+                            }
+                          },
+                          "required": [
+                            "serie",
+                            "ripetizioni",
+                            "carico_kg"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "serie": {
+                              "type": "integer",
+                              "minimum": 1
+                            },
+                            "durata_secondi": {
+                              "type": "integer",
+                              "minimum": 1
+                            }
+                          },
+                          "required": [
+                            "serie",
+                            "durata_secondi"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "serie": {
+                              "type": "integer",
+                              "minimum": 1
+                            },
+                            "durata_secondi": {
+                              "type": "integer",
+                              "minimum": 1
+                            },
+                            "carico_kg": {
+                              "type": "number",
+                              "minimum": 0
+                            }
+                          },
+                          "required": [
+                            "serie",
+                            "durata_secondi",
+                            "carico_kg"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "distanza_metri": {
+                              "type": "number",
+                              "minimum": 0.001
+                            },
+                            "durata_secondi": {
+                              "type": "integer",
+                              "minimum": 1
+                            }
+                          },
+                          "required": [
+                            "distanza_metri",
+                            "durata_secondi"
+                          ],
+                          "additionalProperties": false
+                        }
+                      ]
+                    },
+                    "recuperi": {
+                      "type": "object",
+                      "properties": {
+                        "tra_serie_secondi": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 2147483647
+                        },
+                        "dopo_esercizio_secondi": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 2147483647
+                        }
+                      },
+                      "required": [
+                        "tra_serie_secondi",
+                        "dopo_esercizio_secondi"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "esercizio_id",
+                    "note",
+                    "valori"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "id",
+              "nome",
+              "note",
+              "esercizi"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "id",
+        "nome",
+        "note",
+        "allenamenti"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "formato_versione",
+    "operation_id",
+    "strumenti",
+    "esercizi",
+    "scheda"
+  ],
+  "additionalProperties": false
+}

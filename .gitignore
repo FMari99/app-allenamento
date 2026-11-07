@@ -1,0 +1,13 @@
+node_modules/
+app/dist/
+supabase/.temp/
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+*.pyc
+private/
+work/
+*.local
+.DS_Store
