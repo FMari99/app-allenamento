@@ -181,13 +181,18 @@ Leggi lo script prima di eseguirlo se il tuo ambiente PostgreSQL è personalizza
 
 ## Pubblicazione su GitHub Pages
 
-Il repository include [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml). Per pubblicare un fork:
+La branch `main` contiene i sorgenti; la branch `gh-pages` contiene soltanto gli artefatti statici. Dopo aver installato e autenticato [GitHub CLI](https://cli.github.com/):
 
-1. in **Settings → Pages**, seleziona **GitHub Actions** come sorgente;
-2. in **Settings → Secrets and variables → Actions**, crea i repository secrets `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY`;
-3. esegui il workflow **Pubblica PWA** oppure fai push su `main`.
+```bash
+npm test
+npm run build
+python3 tools/publish_pages.py
+python3 tools/publish_pages.py --publish
+```
 
-Il workflow installa le dipendenze dal lockfile, esegue i test, genera la build e pubblica soltanto `app/dist`. In alternativa, dopo una build locale verificata, `python3 tools/publish_pages.py --publish` avvia lo stesso workflow tramite GitHub CLI.
+Lo script rileva il repository da `origin`, verifica una lista chiusa di file, controlla che i token della sessione locale non siano nella build, crea un commit su `gh-pages` e configura Pages per pubblicare quella branch. In un checkout senza remote riconoscibile usa `--repository proprietario/nome`.
+
+La build incorpora URL e chiave Publishable presenti in `.env.local`; è previsto per un frontend pubblico. Non deve mai contenere una chiave Secret o `service_role`.
 
 ## Struttura del repository
 
