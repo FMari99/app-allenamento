@@ -3,7 +3,7 @@
 - Stato: completata
 - Priorità: P2
 - Significato dello stato: specifica risolta; implementazione non attestata.
-- Ultima revisione: 28/10/2026
+- Ultima revisione: 09/11/2026
 - [Indice delle funzionalità](../../specifica_funzionalita_app.md)
 
 ## Obiettivo e requisiti consolidati
@@ -13,6 +13,9 @@ Mostrare i giorni con allenamenti registrati e permettere di consultarne il dett
 - Toccando un giorno si apre la lista delle sessioni, con scheda, allenamento e fascia oraria di esecuzione.
 - Toccando una sessione si vedono gli esercizi e i valori effettivamente registrati: serie, ripetizioni, carico e durata, ove applicabili.
 - Le sessioni incomplete sono riconoscibili secondo la specifica 005.
+- Aprendo il calendario dal menu di navigazione o riaprendo l’app, selezionare il giorno odierno e il suo mese. Tornando da un dettaglio con Chiudi/Indietro, conservare il giorno precedentemente consultato.
+- Intestazione del mese su una sola riga, con chevron SVG laterali e pulsanti compatti, senza ritorno a capo della freccia destra.
+- Le sessioni concluse aprono la consultazione dei risultati prevista dalla 004, con Chiudi e Modifica; quelle aperte permettono di riprendere l’esecuzione.
 
 ## Esito della revisione delle note
 
@@ -29,4 +32,5 @@ Nessuna per la definizione funzionale attuale. Le decisioni comuni sono nelle sp
 ## Registro delle decisioni
 
 - 28/10/2026: consolidate le note dell’utente e risolta la specifica; i dettagli secondari sono delegati all’assistente.
+- 09/11/2026: selezione iniziale su oggi, intestazione compatta e consultazione separata dall’esecuzione.
 

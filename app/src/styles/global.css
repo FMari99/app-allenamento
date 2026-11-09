@@ -13,6 +13,12 @@ form label { display: grid; gap: .4rem; margin: .8rem 0; }
 .calendar-grid .muted { opacity:.45; }
 .calendar-grid .selected { background:#244c40; color:#fff; }
 .calendar-grid .recorded { font-weight:800; }
+.calendar-heading { display:grid; grid-template-columns:44px minmax(0,1fr) 44px; gap:6px; align-items:center; }
+.calendar-heading h2 { text-align:center; font-size:clamp(.8rem,4vw,1.6rem); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin:10px 0; min-width:0; letter-spacing:-.04em; }
+.calendar-heading .month-arrow { display:grid; place-items:center; padding:0; width:44px; min-height:44px; border:0; border-radius:50%; background:#edf1e5; }
+.month-arrow svg { width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.review-actions { position:sticky; top:8px; z-index:5; padding:8px; background:#f6f6eff5; border:1px solid #dfe5da; border-radius:18px; backdrop-filter:blur(10px); }
+.review-exercise-title { font-size:1.15rem; }
 .exercise-link { text-align:left; margin:.35rem 0; }
 .progress-chart svg { width:100%; display:block; touch-action:pan-y; }
 .progress-chart polyline { fill:none; stroke:currentColor; stroke-width:2; }

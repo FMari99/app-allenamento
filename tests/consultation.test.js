@@ -19,6 +19,16 @@ test('durate confrontabili non mischiano revisioni o incomplete e comprendono pa
  const data=fixture();assert.equal(durationPoints(data,'w',1)[0].minuti,60);assert.equal(durationPoints(data,'w',2).length,0)
  data.sessioni.push({...data.sessioni[0],id:'other',allenamento_id:'altro'});assert.equal(durationPoints(data,'w',1).length,1)
 })
+test('calendario include il 9 novembre anche dopo cambio revisione e conserva minuti esatti',()=>{
+ const data=fixture()
+ data.sessioni=[{...data.sessioni[0],id:'nov4',iniziata_at:'2026-11-04T12:29:00Z',terminata_at:'2026-11-04T13:31:00Z'},
+ {...data.sessioni[0],id:'nov9',scheda_revisione:2,iniziata_at:'2026-11-09T12:24:42Z',terminata_at:'2026-11-09T13:13:34Z'},
+ {...data.sessioni[1],id:'open'}, {...data.sessioni[0],id:'deleted',deleted_at:'oggi'}]
+ const points=durationPoints(data,'w')
+ assert.deepEqual(points.map(p=>p.id),['nov4','nov9']);assert.deepEqual(points.map(p=>p.revision),[1,2])
+ assert.equal(Math.round(points[1].minuti),49);assert.ok(points[1].minuti>48.8 && points[1].minuti<48.9)
+ assert.equal(durationPoints(data,'w',2).length,1)
+})
 test('scale indipendenti preservano dati, distanze temporali reali e punti singoli', () => {
  const points=[{at:'2026-01-01T00:00:00Z',serie:3,rip:12},{at:'2026-01-02T00:00:00Z',serie:4,rip:10},{at:'2026-01-05T00:00:00Z',serie:2,rip:20}]
  const original=structuredClone(points),lines=chartLayout(points,['serie','rip'],true)

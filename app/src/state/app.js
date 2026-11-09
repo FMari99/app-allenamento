@@ -2,6 +2,8 @@ import { proposeFuture,resolveFuture } from '../domain/future.js'
 import { completeSet,startTimer,restartTimer,continueTimer,tickTimer } from '../domain/training-timer.js'
 import { soundChoice } from '../platform/timer-sound.js'
 import { shareUnchanged } from './snapshot.js'
+import { createNavigation } from '../platform/navigation.js'
+import { saveSessionReview } from '../domain/session-review.js'
 import { nextSendableGroup } from '../sync/contract.js'
 import { reactive } from 'vue'
 import { openDatabase, loadSnapshot, commitSnapshot } from '../data/local/database.js'
@@ -17,12 +19,30 @@ import { setVideo } from '../domain/consultation.js'
 import { ensureExtraDemoPlan } from '../data/local/extra-demo-plan.js'
 import { seedDemoHistory } from '../data/local/demo-history.js'
 import { demoData } from '../data/local/demo.js'
-import { emptyData, tables, getRow, startSession, editResult, finishSession, updateCurrent, setInventory } from '../domain/session.js'
+import { emptyData, tables, getRow, startSession, editResult, finishSession, updateCurrent, setInventory, dayInZone } from '../domain/session.js'
 
 const initialUI = () => ({ page: 'home', planId: null, sessionId: null, position: 0 })
 export const appState = reactive({ snapshot: { data: emptyData(), outbox: [], ui: initialUI() }, ownerId: null, email: '', mode: 'login', toast: '', syncing: false, ready: false, saving: false, error: '', savedAt: null, offline: !navigator.onLine, offlineReady: false, updateReady: false, editorDirty: false, now: new Date().toISOString() })
 let engine, database, revision = 0, activeWrites = 0, pending = Promise.resolve()
+let navigation
 const clone = value => JSON.parse(JSON.stringify(value))
+const today=()=>dayInZone(new Date(),Intl.DateTimeFormat().resolvedOptions().timeZone)
+
+export function canLeaveEditor(){
+  if(!appState.editorDirty)return true
+  if(appState.discardEditor){
+    if(!window.confirm('Ci sono modifiche non salvate. Vuoi uscire e scartarle?'))return false
+    appState.discardEditor();return true
+  }
+  appState.error='Salva o annulla le modifiche prima di uscire.';return false
+}
+export function back(){if(!navigation?.back())void navigate('calendar')}
+function closeOverlay(){
+  const dialog=[...document.querySelectorAll('dialog[open]')].at(-1)
+  if(!dialog)return false
+  if(dialog.dispatchEvent(new Event('cancel',{cancelable:true})))dialog.close()
+  return true
+}
 
 async function openOwner(ownerId, email = '') {
   await pending
@@ -38,7 +58,17 @@ async function openOwner(ownerId, email = '') {
     if(changed)revision=await commitSnapshot(database,snapshot,revision)
   }
   appState.snapshot = snapshot
+  if(snapshot.ui.page==='workout' && getRow(data,'sessioni',snapshot.ui.sessionId)?.terminata_at)snapshot.ui.page='review'
+  if(snapshot.ui.page==='calendar'){
+    const day=today()
+    Object.assign(snapshot.ui,{day,month:day.slice(0,7)})
+  }
   Object.assign(appState, { ownerId, email, mode: ownerId === 'demo' ? 'demo' : 'account', ready: true, error: '', editorDirty: false })
+  navigation?.dispose()
+  navigation=createNavigation({browser:window,read:()=>clone(appState.snapshot.ui),restore:ui=>act(s=>{
+    s.ui=clone(ui)
+    if(s.ui.page==='workout' && getRow(s.data,'sessioni',s.ui.sessionId)?.terminata_at)s.ui.page='review'
+  }),canLeave:canLeaveEditor,closeOverlay})
   if (ownerId !== 'demo') localStorage.setItem('allenamento-owner-v1', JSON.stringify({ id: ownerId, email }))
   engine = ownerId === 'demo' ? null : createSyncEngine({ read: () => appState.snapshot, commit: async change => {
     if (!await act(change,{background:true})) throw new Error(appState.error)
@@ -79,6 +109,7 @@ export async function logout() {
   if (appState.mode === 'account') { await getClient().auth.signOut({ scope: 'local' }); localStorage.removeItem('allenamento-owner-v1') }
   await pending
   database?.close(); database = null; engine = null
+  navigation?.dispose();navigation=null
   Object.assign(appState, { ownerId: null, mode: 'login', email: '', snapshot: { data: emptyData(), outbox: [], ui: initialUI() }, error: '' })
 }
 export async function synchronize(manual = true) {
@@ -132,7 +163,9 @@ export function act(change,{background=false}={}) {
       const draft = clone(appState.snapshot)
       change(draft)
       revision = await commitSnapshot(database, draft, revision)
+      const previousUI=clone(appState.snapshot.ui)
       appState.snapshot = shareUnchanged(appState.snapshot,draft)
+      navigation?.sync(previousUI,clone(draft.ui))
       if(!background)appState.savedAt = new Date().toISOString()
       return true
     } catch (error) { appState.error = error.message; return false }
@@ -148,7 +181,19 @@ export const loadDemo = () => act(snapshot => {
   seedDemoWarmups(snapshot.data)
   snapshot.ui = { ...initialUI(), planId: snapshot.data.schede[0].id }
 })
-export const navigate = (page, extra = {}) => act(snapshot => { if (appState.editorDirty) throw new Error('Salva o annulla le modifiche prima di uscire.'); Object.assign(snapshot.ui, { page }, extra) })
+export const navigate = (page, extra = {}) => {
+  if(!canLeaveEditor())return Promise.resolve(false)
+  return act(snapshot => {
+    if(page==='calendar' && snapshot.ui.page!=='calendar'){
+      const day=today()
+      Object.assign(snapshot.ui,{day,month:day.slice(0,7)})
+    }
+    const session=getRow(snapshot.data,'sessioni',extra.sessionId ?? snapshot.ui.sessionId)
+    if(page==='workout' && session?.terminata_at)page='review'
+    Object.assign(snapshot.ui,{page},extra)
+  })
+}
+export const saveReview=(sessionId,draft)=>act(snapshot=>saveSessionReview(snapshot,sessionId,draft)).then(ok=>{if(ok)showToast('Risultati salvati');return ok})
 export const begin = workoutId => act(snapshot => {
   const id = startSession(snapshot.data, workoutId)
   Object.assign(snapshot.ui, { page: 'workout', sessionId: id, position: 0 })

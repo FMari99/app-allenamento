@@ -19,8 +19,8 @@ export function exercisePoints(data, exerciseId) {
     .sort((a,b) => a.at.localeCompare(b.at) || a.id.localeCompare(b.id))
 }
 export function durationPoints(data, workoutId, revision) {
-  return active(data.sessioni).filter(s => s.allenamento_id === workoutId && s.scheda_revisione === Number(revision) && s.terminata_at)
-    .map(s => ({ id:s.id, at:s.iniziata_at, zone:s.fuso_orario, minuti:(Date.parse(s.terminata_at)-Date.parse(s.iniziata_at))/60000 }))
+  return active(data.sessioni).filter(s => s.allenamento_id === workoutId && (revision == null || s.scheda_revisione === Number(revision)) && s.terminata_at)
+    .map(s => ({ id:s.id, at:s.iniziata_at, zone:s.fuso_orario, revision:s.scheda_revisione, minuti:(Date.parse(s.terminata_at)-Date.parse(s.iniziata_at))/60000 }))
     .sort((a,b) => a.at.localeCompare(b.at) || a.id.localeCompare(b.id))
 }
 export function chartLayout(points, fields, independent = false) {

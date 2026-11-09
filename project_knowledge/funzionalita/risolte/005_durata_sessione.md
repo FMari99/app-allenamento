@@ -3,7 +3,7 @@
 - Stato: completata
 - Priorità: P1
 - Significato dello stato: specifica risolta; implementazione non attestata.
-- Ultima revisione: 30/10/2026
+- Ultima revisione: 09/11/2026
 - [Indice delle funzionalità](../../specifica_funzionalita_app.md)
 
 ## Obiettivo e requisiti consolidati
@@ -34,7 +34,7 @@ La nota definisce una gestione semplice basata sugli orari, senza timer di pausa
 
 Scelte autonome: percentuale = esercizi completati / esercizi previsti, arrotondata all’intero; giorno valutato nel fuso della sessione. Anche una sessione che attraversa mezzanotte viene segnalata incompleta finché non è conclusa, come richiesto. Consentire di riprenderla. La normale chiusura dalla schermata di allenamento avviene automaticamente con Completato o Salta sull’ultimo esercizio e usa l’ora dell’azione. La nuova azione Termina nella Home chiude invece una sessione aperta all’orario dell’ultimo esercizio confermato, come richiesto dall’utente il 30/10/2026: non conta il tempo di inattività successivo all’ultima esecuzione. Nell’interfaccia locale si mantiene una sola sessione in corso per il giorno: riprenderla o terminarla prima di avviarne un’altra; le sessioni incomplete rimangono riprendibili.
 
-In F6 lo storico delle durate raggruppa soltanto sessioni concluse dello stesso allenamento e della stessa revisione della scheda; le incomplete sono escluse dal grafico, senza attribuire una fine.
+Lo storico delle durate raggruppa tutte le sessioni concluse dello stesso allenamento, anche di revisioni diverse della scheda (revisione utente del 09/11/2026). Il dettaglio del punto indica la revisione e il testo informa che il contenuto potrebbe essere cambiato; le incomplete sono escluse dal grafico, senza attribuire una fine. Il calendario propone l’allenamento del giorno selezionato, se presente, altrimenti quello eseguito più recentemente. Nessuna scritta «scala 0–n» nel grafico durate. Il valore Durata (min) viene arrotondato all’intero solo nella presentazione, conservando la precisione del calcolo.
 
 ## Questioni importanti aperte
 
@@ -46,6 +46,7 @@ Nessuna per la definizione funzionale attuale. Le decisioni comuni sono nelle sp
 
 
 - 30/10/2026: introdotta su richiesta dell’utente la chiusura da Home all’ultima esecuzione confermata, distinguendola dalla normale conclusione durante l’allenamento.
+- 09/11/2026: superato il filtro obbligatorio sulla revisione che separava le esecuzioni A del 4 e del 9 novembre; stesso allenamento in un unico grafico, revisione esplicita, minuti interi e scala rimossa.
 
 ## Annullamento 02/11/2026
 

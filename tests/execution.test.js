@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import demo from '../examples/scheda-demo.json' with {type:'json'}
 import { emptyData,prefixed,startSession,sessionRows,progress } from '../app/src/domain/session.js'
 import { advanceExercise,elapsedClock,previousResultsPage } from '../app/src/domain/execution.js'
+import { reviewDraft, reviewChanged, saveSessionReview } from '../app/src/domain/session-review.js'
 function fixture(){
  const data=emptyData(),p=demo.scheda,w=p.allenamenti[0]
  data.schede=[{id:p.id,nome:'Demo',revisione:1}];data.allenamenti=[{id:w.id,nome:w.nome,scheda_id:p.id}];data.esercizi=structuredClone(demo.esercizi)
@@ -39,12 +40,36 @@ test('input non valido non cambia dati, posizione o coda',()=>{
  const s=fixture(),before=structuredClone(s)
  assert.throws(()=>advanceExercise(s,s.data.esercizi_sessione[0].id,{serie:null},{now:at}),/mancanti/);assert.deepEqual(s,before)
 })
-test('correzione storica mantiene fine originale e invio manuale',()=>{
+test('correzione storica salva tutta la sessione mantenendo stati, orari e invio manuale',()=>{
  const s=fixture(),rows=sessionRows(s.data,s.ui.sessionId)
  for(const row of rows)advanceExercise(s,row.id,{}, {now:at})
  s.outbox=[];Object.assign(s.ui,{page:'workout',position:rows.length-1})
- const outcome=advanceExercise(s,rows.at(-1).id,{}, {now:'2026-10-31T10:00:00Z'})
- assert.equal(outcome.finished,false);assert.equal(outcome.corrected,true);assert.equal(s.data.sessioni[0].terminata_at,at);assert.equal(s.outbox[0].authorized,false);assert.equal(s.outbox[0].kind,'correzione_risultati')
+ const draft=reviewDraft(s.data,s.ui.sessionId),before=structuredClone(s)
+ assert.equal(reviewChanged(s.data,s.ui.sessionId,draft),false)
+ for(const values of Object.values(draft)){const key=Object.keys(values).find(key=>values[key]!=null);values[key]++}
+ assert.equal(reviewChanged(s.data,s.ui.sessionId,draft),true)
+ assert.deepEqual(s,before)
+ assert.equal(saveSessionReview(s,s.ui.sessionId,draft,'2026-11-09T12:00:00Z'),rows.length)
+ assert.equal(s.data.sessioni[0].terminata_at,at);assert.equal(s.outbox.length,1);assert.equal(s.outbox[0].authorized,false);assert.equal(s.outbox[0].kind,'correzione_risultati')
+ assert.ok(rows.every((row,i)=>row.stato==='completato' && row.completato_at===before.data.esercizi_sessione[i].completato_at))
+ assert.equal(reviewChanged(s.data,s.ui.sessionId,draft),false)
+ assert.throws(()=>advanceExercise(s,rows.at(-1).id,{}),/non è ancora iniziato/)
+ assert.equal(saveSessionReview(s,s.ui.sessionId,draft),0);assert.equal(s.outbox.length,1)
+})
+test('salvataggio storico invalido non modifica nulla; saltati e payload tentati restano intatti',()=>{
+ const s=fixture(),rows=sessionRows(s.data,s.ui.sessionId)
+ advanceExercise(s,rows[0].id,{}, {skip:true,now:at})
+ for(const row of rows.slice(1))advanceExercise(s,row.id,{}, {now:at})
+ const draft=reviewDraft(s.data,s.ui.sessionId)
+ assert.equal(draft[rows[0].id],undefined)
+ const before=structuredClone(s)
+ draft[rows[1].id].serie++;draft[rows.at(-1).id].durata_secondi=null
+ assert.throws(()=>saveSessionReview(s,s.ui.sessionId,draft),/mancanti/);assert.deepEqual(s,before)
+ draft[rows.at(-1).id].durata_secondi=1200
+ s.outbox[0].payload={frozen:true};const attempted=structuredClone(s.outbox[0])
+ saveSessionReview(s,s.ui.sessionId,draft)
+ assert.deepEqual(s.outbox[0],attempted);assert.deepEqual(s.outbox[1].depends_on,[attempted.operation_id])
+ assert.equal(rows[0].stato,'saltato');assert.equal(rows[0].effettivo_serie,null)
 })
 test('cronometro include ore/giorni e si ferma alla fine; precedenti paginati cinque per volta',()=>{
  const session={iniziata_at:'2026-10-29T10:00:00Z',terminata_at:null}

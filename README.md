@@ -18,7 +18,7 @@ La versione pubblica è disponibile su **[fmari99.github.io/app-allenamento](htt
 - generazione, validazione e caricamento ripetibile delle schede in JSON;
 - isolamento dei dati per proprietario tramite autenticazione e Row Level Security.
 
-La versione applicativa corrente è **0.6.1**. Lo stato dettagliato delle verifiche e le decisioni di prodotto sono nel [piano della prima versione](project_knowledge/piano_prima_versione.md).
+La versione applicativa corrente è **0.7.0**. Lo stato dettagliato delle verifiche e le decisioni di prodotto sono nel [piano della prima versione](project_knowledge/piano_prima_versione.md).
 
 ## Architettura
 
@@ -142,6 +142,10 @@ Un reinvio dello stesso file e degli stessi identificativi è idempotente. Se un
 Per usare un assistente AI con le regole complete del progetto, consulta [`skills/crea-scheda-allenamento/SKILL.md`](skills/crea-scheda-allenamento/SKILL.md). L’assistente deve raccogliere obiettivi, esperienza, frequenza, tempo, attrezzatura e vincoli prima di generare una scheda personale.
 
 ## Uso dell’app
+
+Il calendario si apre su oggi. «Sessione ed esercizi» e «Rivedi o correggi risultati» aprono le sessioni concluse in consultazione: **Modifica** abilita i campi e un solo **Salva** registra tutte le correzioni. **Chiudi** torna alla pagina precedente; se hai modifiche non salvate viene chiesta conferma prima di scartarle. Per inviare le correzioni online premi **Sincronizza**. Date e orari dell’esecuzione restano quelli originali.
+
+Il grafico delle durate include tutte le revisioni dello stesso allenamento e mostra la revisione nel dettaglio di ciascun punto; la durata in minuti è arrotondata all’intero. Indietro del telefono segue le pagine visitate nell’app; esaurita la cronologia interna dalla Home può uscire normalmente.
 
 1. Accedi e apri **Area personale → Scarica le tue schede**.
 2. Dalla Home seleziona la scheda e l’allenamento, quindi premi **Inizia**.

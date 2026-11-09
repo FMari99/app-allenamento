@@ -3,7 +3,7 @@
 - Stato: completata
 - Priorità: P1
 - Significato: definizione risolta; prove e pubblicazione nel piano.
-- Ultima revisione: 04/11/2026
+- Ultima revisione: 09/11/2026
 - [Indice](../../specifica_funzionalita_app.md)
 
 ## Interfaccia e impostazioni
@@ -23,6 +23,12 @@ Quando parte un recupero, una modale nativa a tutto schermo copre l’esecuzione
 Salta recupero e Riprendi allenamento chiudono la schermata e conservano il conteggio. Un recupero dopo esercizio già svolto/saltato non riparte premendo successivamente Completato; Annulla ultima serie permette di ripetere la serie e il relativo recupero. Chiusura del browser non azzera il countdown o il tempo extra.
 
 Se il suono è abilitato, Impostazioni mostra Scegli suono. Si apre una seconda modale sopra le impostazioni, con quattro varianti acute: Doppio bip, Trillo, Campanello, Triplo segnale. Toccare una voce riproduce l’anteprima senza sovrapporla a quella precedente. Seleziona aggiorna la scelta nel modulo e chiude soltanto la seconda modale; Salva nelle impostazioni rende persistente l’intera configurazione. Annulla chiude senza modificare la scelta precedente; chiudere ferma l’anteprima. Ripristino del focus al selettore; nessun asset audio o servizio esterno necessario.
+
+## Navigazione Indietro — 09/11/2026
+
+Le pagine dell’app alimentano la cronologia del browser/PWA: Indietro Android torna alla precedente pagina interna e Avanti la riapre. Sfogliare giorni del calendario o esercizi della stessa sessione aggiorna la voce corrente, senza riempire la cronologia. Chiudi nella consultazione storica usa lo stesso ritorno; se la pagina viene riaperta direttamente resta disponibile il ritorno alla Home.
+
+Indietro prova prima a chiudere il dialogo aperto, rispettandone le regole di salvataggio e annullamento. Nella nuova correzione storica chiede conferma prima di scartare bozze; negli altri editor mantiene le protezioni Salva/Annulla esistenti. In Home, esaurita la cronologia interna, Indietro può uscire normalmente dall’app. Nessuna promessa di trattenere l’utente nella PWA.
 
 ## Annullamento
 

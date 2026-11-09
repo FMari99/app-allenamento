@@ -11,6 +11,7 @@ import SettingsView from './views/SettingsView.vue'
 import AccountPanel from './components/AccountPanel.vue'
 import HomeView from './views/HomeView.vue'
 import WorkoutView from './views/WorkoutView.vue'
+import SessionReviewView from './views/SessionReviewView.vue'
 import HistoryView from './views/HistoryView.vue'
 import CalendarView from './views/CalendarView.vue'
 import ExerciseView from './views/ExerciseView.vue'
@@ -42,7 +43,6 @@ function closedMenu() {
 }
 function closeMenu() { menu.value?.close() }
 async function go(page) {
-  if (appState.editorDirty) { appState.error = 'Salva le modifiche oppure annullale nella schermata corrente prima di uscire.'; closeMenu(); return }
   if (await navigate(page)) { closeMenu(); window.scrollTo(0, 0) }
 }
 watch(() => appState.mode, () => { if (menuOpen.value) closeMenu() })
@@ -56,6 +56,7 @@ onUnmounted(() => {clearInterval(soundInterval);document.removeEventListener('po
       <template v-else>
         <HomeView v-if="appState.snapshot.ui.page === 'home'" />
         <WorkoutView v-else-if="appState.snapshot.ui.page === 'workout'" />
+        <SessionReviewView v-else-if="appState.snapshot.ui.page === 'review'" />
         <CalendarView v-else-if="appState.snapshot.ui.page === 'calendar'" />
         <ExerciseView v-else-if="appState.snapshot.ui.page === 'progress'" />
         <HistoryView v-else-if="appState.snapshot.ui.page === 'history'" />

@@ -15,7 +15,7 @@ export function currentExerciseIndex(snapshot,sessionId) {
 }
 export function canExecute(snapshot,resultId) {
  const row=getRow(snapshot.data,'esercizi_sessione',resultId),session=row && getRow(snapshot.data,'sessioni',row.sessione_id)
- return Boolean(row && !row.deleted_at && session && !session.deleted_at && sessionRows(snapshot.data,session.id).findIndex(r=>r.id===resultId)<=currentExerciseIndex(snapshot,session.id))
+ return Boolean(row && !row.deleted_at && session && !session.deleted_at && !session.terminata_at && sessionRows(snapshot.data,session.id).findIndex(r=>r.id===resultId)<=currentExerciseIndex(snapshot,session.id))
 }
 export function rememberStarted(snapshot,sessionId) {
  const local=snapshot.local ??= {};local.started ??= {}
