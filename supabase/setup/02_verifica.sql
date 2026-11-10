@@ -4,7 +4,7 @@ begin;
 do $test$
 declare t text; proprietario uuid; secondo uuid:=gen_random_uuid(); strumento uuid:=gen_random_uuid(); op uuid:=gen_random_uuid(); payload jsonb; prima jsonb; ripetuta jsonb;
 begin
- if (select count(*) from private.migrazioni_app)<>5 then raise exception 'Registro migrazioni incompleto'; end if;
+ if (select count(*) from private.migrazioni_app)<>6 then raise exception 'Registro migrazioni incompleto'; end if;
  if (select count(*) from auth.users)<>1 then raise exception 'Atteso un solo account personale in Authentication > Users'; end if;
  select id into strict proprietario from auth.users;
  foreach t in array array['strumenti','esercizi','esercizi_strumenti','attrezzatura_disponibile','schede','allenamenti','esercizi_allenamento','sessioni','esercizi_sessione','operazioni_sync'] loop

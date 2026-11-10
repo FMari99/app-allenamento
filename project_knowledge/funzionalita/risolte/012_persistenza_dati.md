@@ -2,7 +2,7 @@
 
 - Stato: completata
 - Priorità: P1
-- Ultima revisione: 28/10/2026
+- Ultima revisione: 10/11/2026
 - [Indice delle funzionalità](../../specifica_funzionalita_app.md)
 
 ## Requisiti consolidati
@@ -25,6 +25,8 @@ Comportamento concordato:
 - Salvare subito sul telefono; inviare automaticamente al termine di un’intera sessione di allenamento, insieme a tutti i risultati della sessione.
 - Nel modello attuale la scheda può contenere più allenamenti: qui “intera scheda eseguita” indica la sessione del giorno conclusa, non l’esaurimento dell’intero programma su più giorni.
 - Automatizzare l’invio quando l’operazione ha un confine noto: per esempio conferma finale di una modifica multipla dell’attrezzatura. Il gruppo da inviare deve essere esplicito.
+- Attrezzatura (10/11/2026): Salva nome/note, aggiunta, eliminazione confermata e singolo cambio checkbox concludono ciascuno un gruppo automatico. Nessun invio delle bozze di una modale.
+- Ribadito il 10/11/2026: ogni allenamento concluso deve avviare l’invio automatico della sessione e di tutti i suoi risultati; vale per Completato/Salta finale, ultima serie/timer e Termina da Home. Rete assente: coda persistente e stesso payload al retry, con app attiva.
 - Per modifiche isolate o serie di modifiche senza un termine prevedibile, salvare localmente e lasciare all’utente il comando “Sincronizza”. Esempi: link video modificato, correzione di un risultato passato, modifica puntuale dei valori pianificati.
 - L’invio automatico riguarda solo il gruppo concluso; non trascina con sé modifiche estranee che aspettano la sincronizzazione manuale.
 - Anche le sessioni in corso o incomplete sono sincronizzabili tramite il comando manuale.

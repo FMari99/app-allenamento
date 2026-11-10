@@ -12,10 +12,12 @@ Operare dalla radice di questo progetto, individuabile risalendo due cartelle da
 Esportare i dati remoti con il comando reale:
 
 ```sh
-python3 -m tools.workouts.cli export --output private/contesto.json
+python3 -m tools.workouts.cli export --ai --output private/contesto.json
 ```
 
-Leggere il JSON esportato: catalogo, associazioni strumenti/esercizi, attrezzatura disponibile, schede e storico con riferimenti stabili. Le righe con `deleted_at` valorizzato servono per lo storico: non usarle come riferimenti per nuove schede. L'export contiene solo dati sincronizzati, e le letture paginate non costituiscono uno snapshot transazionale. Se l'utente vuole basarsi sui progressi recenti, ricordare di sincronizzare il telefono se non lo ha già fatto.
+Leggere il JSON esportato: catalogo, associazioni strumenti/esercizi, attrezzatura disponibile, schede e storico con riferimenti stabili. Con `--ai`, `strumenti` contiene soltanto strumenti attivi segnati come disponibili e le loro `note` libere, vuote per default. Considerare le note per carichi, ubicazione e vincoli pratici: una sbarra al parco è disponibile con quel vincolo, non in casa. Non dedurre altri attrezzi dalle schede precedenti né ricreare strumenti non disponibili per aggirare l’inventario. Nuovi strumenti solo su indicazione esplicita dell’utente. `esercizi_non_compatibili` elenca gli ID con strumenti necessari ancora presenti ma non disponibili; non proporli nelle nuove schede senza nuovo contesto esplicito. Uno strumento eliminato e i suoi legami non fanno parte del contesto attivo. Nessuna sostituzione automatica o modifica delle schede già create.
+
+Le righe con `deleted_at` valorizzato degli altri cataloghi servono per lo storico: non usarle come riferimenti per nuove schede. L'export contiene solo dati sincronizzati, e le letture paginate non costituiscono uno snapshot transazionale. Se servono acquisti/modifiche recenti o progressi, verificare che il telefono li abbia inviati. L’export senza `--ai` resta completo, incluse righe disattivate e ricevute, per backup e verifiche tecniche; non usarne l’elenco strumenti come inventario disponibile.
 
 Raccogliere in conversazione obiettivi, esperienza, frequenza, tempo, attrezzatura e vincoli pratici ancora mancanti. Nessun profilo personale aggiuntivo persistente; non copiare l'intera conversazione nel database. Non inventare obiettivi personali, disponibilità o attrezzatura. Usare dati fittizi soltanto per prove dichiarate.
 
@@ -52,4 +54,4 @@ Lo script valida contro il catalogo reale e salva tramite un'unica RPC atomica. 
 
 Se l'accesso è scaduto e il refresh fallisce, chiedere all'utente di eseguire `python3 -m tools.workouts.cli login` nel terminale locale: non chiedere password in chat o inserirle negli argomenti. Usare solo chiave pubblicabile e sessione personale; nessuna chiave amministrativa necessaria.
 
-Dopo il caricamento riesportare e verificare scheda e relazioni. Conservare file personali ed esportazioni sotto `private/`, mai nella build pubblica. Comunicare il risultato e ricordare che la scheda deve essere scaricata manualmente dal telefono quando tale flusso è disponibile.
+Dopo il caricamento riesportare senza `--ai` in un file di verifica privato e verificare scheda e relazioni, comprese eventuali nuove voci di catalogo. Conservare file personali ed esportazioni sotto `private/`, mai nella build pubblica. Comunicare il risultato e ricordare che la scheda deve essere scaricata manualmente dal telefono quando tale flusso è disponibile.

@@ -445,5 +445,8 @@ end $$;
 
 insert into private.migrazioni_app(versione) values ('20261104155916');
 notify pgrst, 'reload schema';
+alter table public.strumenti add column note text not null default '';
+insert into private.migrazioni_app(versione) values ('20261110094815');
+notify pgrst, 'reload schema';
 commit;
 select 'Configurazione completata' as esito, count(*) as migrazioni from private.migrazioni_app;

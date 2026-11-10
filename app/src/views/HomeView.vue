@@ -5,6 +5,7 @@ import { active, ordered, sessionStatus, progress, getRow, workoutEntries } from
 import { recentPlans, planSessions, sessionActivity, homeWorkout, openWorkoutSession, lastConfirmedAt } from '../domain/home.js'
 import { resumePosition } from '../domain/execution.js'
 import { dateText } from '../domain/presentation.js'
+import { exerciseEquipment } from '../domain/equipment.js'
 const data = computed(() => appState.snapshot.data)
 const plans = computed(() => recentPlans(data.value))
 const chosenPlanId=ref(null), chosenWorkoutId=ref(null)
@@ -27,7 +28,7 @@ function choosePlan(id){chosenPlanId.value=id;chosenWorkoutId.value=null;closePi
 function move(delta){chosenWorkoutId.value=workouts.value[(position.value+delta+workouts.value.length)%workouts.value.length].id}
 function lastUse(plan){const last=planSessions(data.value,plan.id)[0];return last ? dateText(new Date(sessionActivity(data.value,last)).toISOString(),last.fuso_orario) : 'Non ancora eseguita'}
 function toolSummary(entry) {
-  return active(data.value.esercizi_strumenti).filter(a => a.esercizio_id === entry.esercizio_id).map(a => `${getRow(data.value, 'strumenti', a.strumento_id)?.nome ?? 'Attrezzo'} (${a.ruolo})`).join(' · ')
+  return exerciseEquipment(data.value,entry.esercizio_id).map(a => `${a.nome} (${a.ruolo})`).join(' · ')
 }
 function resume(){if(session.value)return navigate('workout',{sessionId:session.value.id,position:resumePosition(data.value,session.value.id)})}
 async function terminate(){

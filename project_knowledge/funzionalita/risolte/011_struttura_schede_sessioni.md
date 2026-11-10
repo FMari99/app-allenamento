@@ -2,7 +2,7 @@
 
 - Stato: completata
 - Priorità: P1
-- Ultima revisione: 29/10/2026
+- Ultima revisione: 10/11/2026
 - [Indice delle funzionalità](../../specifica_funzionalita_app.md)
 
 ## Obiettivo e base tecnica
@@ -37,6 +37,7 @@ Catalogo personale degli strumenti disponibili o utilizzabili.
 | Colonna specifica | Tipo | Vincoli / significato |
 | --- | --- | --- |
 | nome | text | Non vuoto; nome dello strumento |
+| note | text | Non NULL, default stringa vuota; testo libero su carichi, luogo e vincoli pratici |
 
 Unicità del nome normalizzato (minuscole e spazi esterni rimossi) per utente tra record non eliminati. Il catalogo può contenere strumenti non posseduti.
 

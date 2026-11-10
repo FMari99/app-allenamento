@@ -67,6 +67,7 @@ def main():
         subparsers.add_parser(name)
     export=subparsers.add_parser('export',help='Esporta catalogo, schede, attrezzatura e storico sincronizzato')
     export.add_argument('--output',type=Path,default=ROOT/'private/contesto.json')
+    export.add_argument('--ai',action='store_true',help='Contesto per nuove schede: solo attrezzi attivi disponibili e relative note')
     prepare=subparsers.add_parser('prepare',help='Valida e riepiloga senza rete o caricamento')
     prepare.add_argument('file',type=Path)
     prepare.add_argument('--catalogo',type=Path)
@@ -102,7 +103,7 @@ def main():
         token=session_token(url,key)
         transfer=Transfer(url,key,token)
         if args.command=='export':
-            data=transfer.export(args.output)
+            data=transfer.export(args.output,for_ai=args.ai)
             print(f"Contesto esportato in {args.output}: {len(data['schede'])} schede, "
                   f"{len(data['esercizi'])} esercizi, {len(data['sessioni'])} sessioni (incluse righe disattivate).")
             return

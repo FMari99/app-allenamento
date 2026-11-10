@@ -2,6 +2,7 @@ import { getRow,sessionRows,measures,active } from './session.js'
 import { validateValues } from './categories.js'
 import { recordSet,setCount,dismissRest,restRemaining,afterExercise } from './rest.js'
 import { advanceExercise,currentExerciseIndex,executionSettings } from './execution.js'
+import { exerciseEquipment } from './equipment.js'
 const local=s=>(s.local ??= {})
 const make=(s,row,kind,seconds,now,extra={})=>(local(s).rest={id:crypto.randomUUID(),sessionId:row.sessione_id,sourceId:row.id,targetId:row.id,kind,duration:seconds,endsAt:now+seconds*1000,...extra})
 export function timedExercise(snapshot,id){const row=getRow(snapshot.data,'esercizi_sessione',id),entry=row && getRow(snapshot.data,'esercizi_allenamento',row.esercizio_allenamento_id),exercise=entry && getRow(snapshot.data,'esercizi',entry.esercizio_id);return {row,entry,exercise}}
@@ -76,7 +77,7 @@ export function timerNextDetails(snapshot) {
  if(t.kind==='serie')return {label:'Prossima serie',name:`${setCount(snapshot,row.id)+1} di ${row.effettivo_serie ?? 1}`,preparation:''}
  const next=getRow(snapshot.data,'esercizi_sessione',t.targetId),details=next && timedExercise(snapshot,next.id)
  if(!details?.exercise)return {label:'',name:'Riprendi allenamento',preparation:''}
- const tools=[...new Set(active(snapshot.data.esercizi_strumenti).filter(a=>a.esercizio_id===details.exercise.id).map(a=>getRow(snapshot.data,'strumenti',a.strumento_id)).filter(t=>t && !t.deleted_at).map(t=>t.nome).filter(Boolean))]
+ const tools=[...new Set(exerciseEquipment(snapshot.data,details.exercise.id).map(t=>t.nome).filter(Boolean))]
  const load=details.row.effettivo_carico_kg
  const preparation=[...tools,...(Number.isFinite(load) && load>0 ? [`carico ${new Intl.NumberFormat('it-IT').format(load)} kg`] : [])].join(' · ')
  return {label:'Prossimo esercizio',name:details.exercise.nome,preparation}

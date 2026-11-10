@@ -12,6 +12,26 @@ from tools.workouts.validate import validate
 
 
 class TransferTest(unittest.TestCase):
+    def test_ai_context_shows_only_available_live_tools_with_notes(self):
+        data = {table: [] for table in transfer.TABLES}
+        data.update(meta={}, operazioni_sync=[{'risultato': [{'nome': 'Attrezzo non disponibile'}]}])
+        data['strumenti'] = [{'id': 'yes', 'nome': 'Manubri', 'note': 'Fino a 10 kg'},
+                             {'id': 'park', 'nome': 'Sbarra', 'note': 'Al parco'},
+                             {'id': 'no', 'nome': 'Panca'}, {'id': 'gone', 'nome': 'Eliminato', 'deleted_at': 'oggi'}]
+        data['attrezzatura_disponibile'] = [{'strumento_id': 'yes'}, {'strumento_id': 'park'}, {'strumento_id': 'gone'}, {'strumento_id': 'no', 'deleted_at': 'oggi'}]
+        data['esercizi_strumenti'] = [{'esercizio_id': 'e1', 'strumento_id': 'yes', 'ruolo': 'necessario'},
+                                      {'esercizio_id': 'e2', 'strumento_id': 'no', 'ruolo': 'necessario'},
+                                      {'esercizio_id': 'e3', 'strumento_id': 'gone', 'ruolo': 'necessario'},
+                                      {'esercizio_id': 'e4', 'strumento_id': 'no', 'ruolo': 'utile'}]
+        before = copy.deepcopy(data)
+        result = transfer.ai_context(data)
+        self.assertEqual([r['id'] for r in result['strumenti']], ['yes', 'park'])
+        self.assertEqual(result['strumenti'][1]['note'], 'Al parco')
+        self.assertEqual(result['esercizi_non_compatibili'], ['e2'])
+        self.assertEqual(len(result['esercizi_strumenti']), 1)
+        self.assertNotIn('operazioni_sync', result)
+        self.assertEqual(data, before)
+
     def setUp(self):
         self.data = json.loads(Path('examples/scheda-demo.json').read_text())
 

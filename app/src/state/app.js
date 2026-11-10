@@ -4,6 +4,7 @@ import { soundChoice } from '../platform/timer-sound.js'
 import { shareUnchanged } from './snapshot.js'
 import { createNavigation } from '../platform/navigation.js'
 import { saveSessionReview } from '../domain/session-review.js'
+import { writeTool, removeTool, setToolAvailable } from '../domain/equipment.js'
 import { nextSendableGroup } from '../sync/contract.js'
 import { reactive } from 'vue'
 import { openDatabase, loadSnapshot, commitSnapshot } from '../data/local/database.js'
@@ -225,6 +226,9 @@ export const saveInventory = ids => autoAfter(act(snapshot => {
   const rows = setInventory(snapshot.data, ids)
   if (rows.length) enqueue(snapshot, 'inventory', 'inventario_confermato', true, rows.map(data => ({ table: 'attrezzatura_disponibile', data })))
 }))
+export const saveTool=(id,patch)=>autoAfter(act(snapshot=>writeTool(snapshot,id,patch)))
+export const deleteTool=id=>autoAfter(act(snapshot=>removeTool(snapshot,id)))
+export const saveToolAvailability=(id,available)=>autoAfter(act(snapshot=>setToolAvailable(snapshot,id,available)))
 function autoAfter(result) { return result.then(ok => { if (ok) void synchronize(false); return ok }) }
 if (typeof window !== 'undefined') {
   window.addEventListener('online', () => { appState.offline = false; void synchronize(false) })

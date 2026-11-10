@@ -27,6 +27,7 @@ Le questioni comuni su categorie, modello dati, persistenza, sincronizzazione e 
 - Un riepilogo dei risultati per esercizio eseguito; nessun dettaglio delle singole serie nella prima versione.
 - Video facoltativo inserito dall’utente e salvato sull’esercizio; l’AI non seleziona video.
 - Attrezzatura associata una volta all’esercizio, distinguendo strumenti necessari e utili.
+- Attrezzatura modificabile dall’app con disponibilità e note libere per strumento; l’AI riceve solo gli attrezzi attivi disponibili con note per le nuove schede. Le schede già create non si adattano alle successive modifiche dell’inventario; nessuna sostituzione automatica (10/11/2026).
 - Vincoli pratici e contesto personale raccolti nella conversazione con l’AI, senza questionari dedicati nell’app.
 - Proposta iniziale AI e impostazione corrente conservate nel piano; risultati effettivi nella sessione. Nessuna copia separata dei valori previsti per ogni sessione.
 - Valori della sessione precompilati all’avvio, modificabili e validi come risultati solo dopo conferma. L’esercizio si ricava dalla voce stabile del piano: sostituirlo richiede una nuova voce, conservando la precedente per lo storico.

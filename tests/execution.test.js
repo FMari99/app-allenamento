@@ -4,6 +4,8 @@ import demo from '../examples/scheda-demo.json' with {type:'json'}
 import { emptyData,prefixed,startSession,sessionRows,progress } from '../app/src/domain/session.js'
 import { advanceExercise,elapsedClock,previousResultsPage } from '../app/src/domain/execution.js'
 import { reviewDraft, reviewChanged, saveSessionReview } from '../app/src/domain/session-review.js'
+import { createSyncEngine } from '../app/src/sync/engine.js'
+import { enqueue } from '../app/src/sync/local-groups.js'
 function fixture(){
  const data=emptyData(),p=demo.scheda,w=p.allenamenti[0]
  data.schede=[{id:p.id,nome:'Demo',revisione:1}];data.allenamenti=[{id:w.id,nome:w.nome,scheda_id:p.id}];data.esercizi=structuredClone(demo.esercizi)
@@ -12,6 +14,22 @@ function fixture(){
  return {data,outbox:[],ui:{page:'workout',sessionId:id,position:0}}
 }
 const at='2026-10-30T10:10:00Z'
+test('fine allenamento invia automaticamente sessione e risultati; offline ritenta lo stesso payload',async()=>{
+ const s=fixture()
+ for(const row of sessionRows(s.data,s.ui.sessionId))advanceExercise(s,row.id,{}, {now:at})
+ enqueue(s,'other','piano_modificato',false,[{table:'schede',data:s.data.schede[0]}])
+ let sent,offline=true,calls=0
+ const sync=createSyncEngine({read:()=>s,commit:async change=>{const draft=structuredClone(s);change(draft);Object.assign(s,draft)},remote:{send:async payload=>{
+   calls++;if(offline){sent=payload;throw new Error('offline')}
+   assert.deepEqual(payload,sent)
+   return payload.modifiche.map(m=>({tabella:m.tabella,riga:{...m.dati,row_version:1}}))
+ }}})
+ await assert.rejects(sync(false),/offline/)
+ assert.equal(sent.modifiche.filter(m=>m.tabella==='sessioni').length,1)
+ assert.equal(sent.modifiche.filter(m=>m.tabella==='esercizi_sessione').length,5)
+ offline=false;await sync(false)
+ assert.equal(calls,2);assert.equal(s.outbox.length,1);assert.equal(s.outbox[0].kind,'piano_modificato')
+})
 test('Completato valida e avanza nello stesso snapshot, senza concludere prematuramente',()=>{
  const s=fixture(),row=sessionRows(s.data,s.ui.sessionId)[0]
  const outcome=advanceExercise(s,row.id,{ripetizioni:12},{now:at})

@@ -11,6 +11,7 @@ Il ciclo AI → JSON → script → database è centrale, e il confine tra opera
 ## Decisioni consolidate
 - L’AI opera dall’ambiente locale dell’assistente già usato dall’utente. Nessuna API LLM a pagamento integrata nell’app e nessuna chat AI dentro l’app.
 - Uno script Python esporta su richiesta catalogo, attrezzatura e storico sincronizzato in un JSON di contesto. L’AI lo legge prima di generare una scheda.
+- Dal 10/11/2026 usare `export --ai` per la generazione: strumenti attivi e disponibili con note libere, associazioni filtrate e ID degli esercizi incompatibili per strumenti necessari non disponibili. Nessuna sostituzione delle schede esistenti; nessun recupero di attrezzi dalle vecchie ricevute. Export completo senza flag mantenuto per backup, validazione e verifica post-upload.
 - I risultati non ancora inviati dal telefono non sono disponibili all’AI: prima di chiedere una scheda basata sui progressi, l’utente sincronizza.
 - Una skill del progetto descrive schema JSON, categorie, convenzioni e uso dello script. La realizzazione della skill fa parte dello sviluppo, non di questa revisione.
 - Lo script parte anche da un database vuoto: il JSON può proporre esercizi e strumenti nuovi oltre a referenziare ID esistenti.

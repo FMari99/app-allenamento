@@ -10,7 +10,7 @@ Lo stato riguarda la **definizione della specifica**, non lo sviluppo dell’app
 - **In discussione**: analizzata, ma con decisioni importanti ancora aperte; file in `funzionalita/in_discussione/`.
 - **Da discutere**: ancora da analizzare; file in `funzionalita/in_discussione/`.
 
-I dettagli secondari di presentazione e interazione vengono decisi dall’assistente e annotati nella specifica senza impedirne la chiusura. Alla revisione del 04/11/2026 risultano risolte le specifiche 001–022, inclusi riscaldamenti riutilizzabili e impostazioni di esecuzione. Nessuna in discussione.
+I dettagli secondari di presentazione e interazione vengono decisi dall’assistente e annotati nella specifica senza impedirne la chiusura. Alla revisione del 10/11/2026 risultano risolte le specifiche 001–022, inclusi riscaldamenti riutilizzabili, impostazioni di esecuzione e attrezzatura con note libere. Nessuna in discussione.
 
 ## Priorità
 
@@ -71,6 +71,8 @@ Non rimangono decisioni funzionali bloccanti prima dello sviluppo. Restano verif
 Il [piano strategico della prima versione](piano_prima_versione.md) è il riferimento unico per ordine delle macrofasi, ruoli AI/umano, criteri di accettazione e avanzamento. Prevede una prima consegna utilizzabile e poi il completamento di calendario, grafici e video. I requisiti rimangono nei file delle specifiche; il piano non ne modifica lo stato.
 
 ## Registro delle revisioni
+
+- 10/11/2026: 007–008 aggiornate per gestione strumenti dall’app, note libere e inventario per le nuove schede; nessuna sostituzione automatica. 011/012/014/017 allineate a schema, invii automatici e contesto AI filtrato. Ribadito l’invio automatico a fine allenamento.
 
 - 27/10/2026: prima formalizzazione delle nove funzionalità.
 - 28/10/2026: analizzate le note dell’utente; tutte le nove specifiche risultano risolte. Creati i file dedicati, assegnate priorità e abbozzate le cinque proposte trasversali. Nessuna implementazione è attestata da questi stati.

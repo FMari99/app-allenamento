@@ -18,6 +18,7 @@ Comportamento concordato:
 - Dare allo strumento AI accesso al catalogo, all’attrezzatura e, quando utile alla richiesta, allo storico dei risultati per formulare la scheda.
 - Tradurre le conclusioni nei dati della scheda e in brevi istruzioni operative, senza copiare automaticamente l’intera conversazione nel database.
 - Non creare inizialmente un profilo personale persistente aggiuntivo: il contesto non contenuto nelle schede o nello storico viene fornito in conversazione.
+- Revisione 10/11/2026: le note libere sui singoli strumenti (008) conservano carichi disponibili, ubicazione e vincoli specifici dell’attrezzatura; l’AI le considera per le nuove schede. Non costituiscono un profilo personale aggiuntivo né un questionario strutturato.
 
 ## Questioni importanti aperte
 

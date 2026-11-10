@@ -3,7 +3,7 @@
 - Stato: completata
 - Priorità: P1
 - Significato dello stato: specifica risolta; implementazione non attestata.
-- Ultima revisione: 28/10/2026
+- Ultima revisione: 10/11/2026
 - [Indice delle funzionalità](../../specifica_funzionalita_app.md)
 
 ## Obiettivo e requisiti consolidati
@@ -19,7 +19,7 @@ Definire l’attrezzatura una sola volta nel catalogo degli esercizi e riutilizz
 
 ## Esito della revisione delle note
 
-Approvato. La distinzione necessario/utile è semplice e utile: consente di filtrare gli esercizi senza escluderli per la mancanza di accessori facoltativi.
+La distinzione necessario/utile guida la generazione delle nuove schede senza escludere esercizi per la mancanza di accessori facoltativi. Non introduce filtri, blocchi o sostituzioni nelle schede già create. Le successive modifiche di disponibilità sono contesto per l’AI; la rimozione dello strumento ne nasconde anche i legami visibili, senza alterare esercizi o risultati (revisione 10/11/2026, specifica 008).
 
 ## Dettagli delegati all’assistente
 

@@ -14,7 +14,7 @@ postgres=versions[-1]; initdb=postgres.parent/'initdb'
 with tempfile.TemporaryDirectory(prefix='allenamento-sql-') as directory:
     subprocess.run([str(initdb),'-D',directory,'-A','trust','--no-locale','-E','UTF8'],check=True,stdout=subprocess.DEVNULL)
     migrations=[root/'supabase/setup/01_installazione.sql'] if args.setup else sorted((root/'supabase/migrations').glob('*.sql'))
-    files=[root/'supabase/tests/bootstrap_locale.sql',*migrations,root/'supabase/tests/fondazioni.sql',root/'supabase/tests/recuperi.sql',root/'supabase/tests/riscaldamenti.sql',root/'supabase/tests/prossima_esecuzione.sql']
+    files=[root/'supabase/tests/bootstrap_locale.sql',*migrations,root/'supabase/tests/fondazioni.sql',root/'supabase/tests/recuperi.sql',root/'supabase/tests/riscaldamenti.sql',root/'supabase/tests/prossima_esecuzione.sql',root/'supabase/tests/attrezzatura.sql']
     # Il backend single-user legge un comando per riga: manteniamo ogni file su una riga.
     import re
     commands="select set_config('app.test_single_user','true',false);\n"+'\n'.join(re.sub(r'--[^\n]*','',p.read_text()).replace('\n',' ').replace('; set local role authenticated;', ';\nset local role authenticated;\n').replace('; select set_config', ';\nselect set_config').replace('; do $test$', ';\ndo $test$') for p in files)+'\n'

@@ -18,7 +18,7 @@ La versione pubblica è disponibile su **[fmari99.github.io/app-allenamento](htt
 - generazione, validazione e caricamento ripetibile delle schede in JSON;
 - isolamento dei dati per proprietario tramite autenticazione e Row Level Security.
 
-La versione applicativa corrente è **0.7.0**. Lo stato dettagliato delle verifiche e le decisioni di prodotto sono nel [piano della prima versione](project_knowledge/piano_prima_versione.md).
+La versione applicativa corrente è **0.8.0**. Lo stato dettagliato delle verifiche e le decisioni di prodotto sono nel [piano della prima versione](project_knowledge/piano_prima_versione.md).
 
 ## Architettura
 
@@ -119,10 +119,10 @@ python3 -m tools.workouts.cli check
 
 `configure` richiede URL e chiave Publishable. `login` legge la password in modo nascosto e conserva la sessione in `private/session.json`; non passare password o token come argomenti della shell.
 
-Esporta catalogo, attrezzatura e storico già sincronizzati:
+Esporta il contesto per generare nuove schede: catalogo e storico sincronizzati, con soli attrezzi attivi disponibili e relative note:
 
 ```bash
-python3 -m tools.workouts.cli export --output private/contesto.json
+python3 -m tools.workouts.cli export --ai --output private/contesto.json
 ```
 
 Prepara una scheda conforme al contratto v3, partendo da [`examples/scheda-riscaldamenti-demo.json`](examples/scheda-riscaldamenti-demo.json) e da [`schemas/scheda-v3.schema.json`](schemas/scheda-v3.schema.json), poi validala:
@@ -142,6 +142,10 @@ Un reinvio dello stesso file e degli stessi identificativi è idempotente. Se un
 Per usare un assistente AI con le regole complete del progetto, consulta [`skills/crea-scheda-allenamento/SKILL.md`](skills/crea-scheda-allenamento/SKILL.md). L’assistente deve raccogliere obiettivi, esperienza, frequenza, tempo, attrezzatura e vincoli prima di generare una scheda personale.
 
 ## Uso dell’app
+
+In **Attrezzatura** puoi aggiungere strumenti, modificarne il nome ed eliminarli. Il pulsante **Note** apre uno spazio di testo libero per pesi disponibili, regolazioni, ubicazione (per esempio al parco) e altri vincoli. Le note sono facoltative e inizialmente vuote. La checkbox indica la disponibilità per le future schede: si salva al tocco; nome e note richiedono **Salva** nella modale. Ogni modifica confermata viene inviata automaticamente al cloud; offline rimane in coda. Eliminare uno strumento lo rimuove anche dalle indicazioni di attrezzatura degli esercizi. Schede, risultati e possibilità di esecuzione restano invariati; nessuna sostituzione automatica.
+
+Per un export completo, incluse righe disattivate e ricevute tecniche, ometti `--ai` e usa un file privato separato. Il contesto AI non mostra attrezzi eliminati/non disponibili; gli ID in `esercizi_non_compatibili` indicano esercizi con strumenti necessari non disponibili da considerare nella nuova generazione.
 
 Il calendario si apre su oggi. «Sessione ed esercizi» e «Rivedi o correggi risultati» aprono le sessioni concluse in consultazione: **Modifica** abilita i campi e un solo **Salva** registra tutte le correzioni. **Chiudi** torna alla pagina precedente; se hai modifiche non salvate viene chiesta conferma prima di scartarle. Per inviare le correzioni online premi **Sincronizza**. Date e orari dell’esecuzione restano quelli originali.
 

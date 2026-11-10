@@ -16,6 +16,23 @@ TABLES = ('strumenti', 'esercizi', 'esercizi_strumenti', 'attrezzatura_disponibi
 PAGE_SIZE = 500
 
 
+def ai_context(data):
+    """Contesto di generazione: solo strumenti attivi dichiarati disponibili, con note."""
+    available = {row['strumento_id'] for row in data['attrezzatura_disponibile'] if not row.get('deleted_at')}
+    live_tools = {row['id'] for row in data['strumenti'] if not row.get('deleted_at')}
+    selected = available & live_tools
+    result = {key: value for key, value in data.items() if key != 'operazioni_sync'}
+    result['strumenti'] = [{**row, 'note': row.get('note', '')} for row in data['strumenti'] if row['id'] in selected]
+    result['attrezzatura_disponibile'] = [row for row in data['attrezzatura_disponibile'] if not row.get('deleted_at') and row['strumento_id'] in selected]
+    links = [row for row in data['esercizi_strumenti'] if not row.get('deleted_at') and row['strumento_id'] in live_tools]
+    result['esercizi_strumenti'] = [row for row in links if row['strumento_id'] in selected]
+    result['esercizi_non_compatibili'] = sorted({row['esercizio_id'] for row in links if row['ruolo'] == 'necessario' and row['strumento_id'] not in selected})
+    result['meta'] = {**data['meta'], 'contesto_ai': True,
+                      'attrezzatura': 'Solo strumenti presenti e disponibili. Considerare le note libere. '
+                      'Le schede esistenti restano invariate; nessuna sostituzione automatica.'}
+    return result
+
+
 def read_json(path):
     def invalid(value):
         raise ValueError(f'Numero JSON non valido: {value}')
@@ -80,7 +97,7 @@ class Transfer:
         return {table: self.rows(table, filters={'deleted_at': 'is.null'})
                 for table in ('strumenti', 'esercizi')}
 
-    def export(self, path):
+    def export(self, path, *, for_ai=False):
         started = datetime.now(timezone.utc).isoformat()
         data = {table: self.rows(table) for table in TABLES}
         data['operazioni_sync'] = self.rows('operazioni_sync')
@@ -91,6 +108,8 @@ class Transfer:
                     'Conservare le righe disattivate per ricostruire lo storico; '
                     'usare solo voci attive nelle nuove schede.',
         }
+        if for_ai:
+            data = ai_context(data)
         save_private(path, data)
         return data
 
